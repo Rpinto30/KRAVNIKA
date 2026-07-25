@@ -9,7 +9,7 @@
 //
 // "and", "or", "not", "xor" son palabras reservadas en C++ (alias de
 // &&, ||, !, ^), por eso los metodos se llaman AND, OR, NOT, XOR.
-
+//Bip Bop
 
 using Bin = bool;
 
