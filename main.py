@@ -23,8 +23,9 @@ import os
  
  
 # Ruta al ejecutable compilado en C++.
-RUTA_EJECUTABLE = os.path.join("..", "Automate", "automate")
- 
+#RUTA_EJECUTABLE = os.path.join("Automate", "automate.cpp")
+RUTA_EJECUTABLE = r"C:\Users\rodri\OneDrive\Documentos\KRAVNIKA\Automate\output.exe"
+print(RUTA_EJECUTABLE)
 
 ENVIAR_COMO_ARGUMENTO = True #AL trabajar con codigo binario/ cambira por std::cin >> cadena y se cambia a False
  
@@ -34,10 +35,6 @@ TEXTO_INVALIDA = "invalida"
  
  
 def ejecutar_automata(cadena: str) -> tuple[bool, str]:
-    """
-    Ejecuta el programa de C++ con la cadena dada.
-    Devuelve (es_valida, mensaje_completo_del_programa).
-    """
     try:
         if ENVIAR_COMO_ARGUMENTO:
             resultado = subprocess.run(
@@ -76,6 +73,8 @@ def ejecutar_automata(cadena: str) -> tuple[bool, str]:
     except Exception as e:
         return False, f"Error inesperado: {e}"
  
+ 
+print(ejecutar_automata("Hola mundo"))
  
 class AplicacionAutomata(tk.Tk):
     def __init__(self):
