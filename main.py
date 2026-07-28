@@ -31,6 +31,7 @@ def ejecutar_automata(cadena: str) -> tuple[bool, str]:
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
+            cwd=os.path.dirname(RUTA_EJECUTABLE)
         )
 
         stdout_salida, stderr_salida = proceso.communicate(
