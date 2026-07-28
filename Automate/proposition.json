@@ -3,7 +3,7 @@
 ,
 "sentences": [
 {
-"content": "h\"ola.",
+"content": "a\"hora:s\"i:d\"io.",
 "output": 1,
 "init_exclamation": 0,
 "end_exclamation": 0,
@@ -15,7 +15,61 @@
 ,
 "words": [
 {
-"content": "h\"ola.",
+"content": "a\"hora:",
+"output": 1,
+"init_quotation": 1,
+"init_hyphen": 0,
+"contain_names": 0,
+"have_digits": 0,
+"have_special_charts_digits": 0,
+"next_special_chart_between_19": 0
+},
+{
+"content": "s\"i:",
+"output": 1,
+"init_quotation": 1,
+"init_hyphen": 0,
+"contain_names": 0,
+"have_digits": 0,
+"have_special_charts_digits": 0,
+"next_special_chart_between_19": 0
+},
+{
+"content": "d\"io.",
+"output": 1,
+"init_quotation": 1,
+"init_hyphen": 0,
+"contain_names": 0,
+"have_digits": 0,
+"have_special_charts_digits": 0,
+"next_special_chart_between_19": 0
+}
+]
+},
+{
+"content": "!e\"sta:m\"ierda!.",
+"output": 1,
+"init_exclamation": 1,
+"end_exclamation": 1,
+"init_interogation": 0,
+"end_interogation": 0,
+"split_by_double_dot": 1,
+"end_dot": 1,
+"last_letter": 1
+,
+"words": [
+{
+"content": "!e\"sta:",
+"output": 1,
+"init_quotation": 1,
+"init_hyphen": 0,
+"contain_names": 0,
+"have_digits": 0,
+"have_special_charts_digits": 0,
+"next_special_chart_between_19": 0
+},
+{
+"content": "m\"ierda!.",
 "output": 1,
 "init_quotation": 1,
 "init_hyphen": 0,

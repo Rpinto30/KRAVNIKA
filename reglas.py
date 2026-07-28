@@ -6,27 +6,27 @@ class Reglas(ttk.LabelFrame):
     def __init__(self,parent):
         super().__init__(parent, padding = 10)
 
-        label_resumen = ttk.Label(self, text = "Resumen", font = ("Kravnika", 14, "bold"))
+        label_resumen = ttk.Label(self, text = "Resumen", font = ("Console", 14, "bold"))
         label_resumen.pack(anchor = "w", pady = (0,8))
 
 
         frame_expresiones = ttk.Frame(self, padding=10)
         frame_expresiones.pack(side=tk.TOP, fill="both", expand=True, padx=12, pady=12)
 
-        label_titulo_expresiones = ttk.Label(frame_expresiones, text = "Expresion Logica", font = ("Kravnika", 10, "bold"))
+        label_titulo_expresiones = ttk.Label(frame_expresiones, text = "Expresion Logica", font = ("Console", 10, "bold"))
         label_titulo_expresiones.pack(anchor = "w", pady = (0,4))
         texto_expresiones = (
             "{[(e ↔ f) ∨ (g ↔ h)] ∧ ¬i ∧ [j ∨ (k ↔ l)]}\n"
             " ∧ {(a ⊻ b) ∧ [c ∧ (z ↔ y)]} → Pn\n"
             "P1 ∧ P2 ∧ P3 ∧ ... ∧ Pn → q"
         )
-        label_expresiones = ttk.Label(frame_expresiones, text=texto_expresiones, font=("Kravnika", 10), justify="left")
+        label_expresiones = ttk.Label(frame_expresiones, text=texto_expresiones, font=("Console", 15), justify="left")
         label_expresiones.pack(anchor="w", pady=(0, 15))
 
         separador = ttk.Separator(frame_expresiones, orient="horizontal")
         separador.pack(fill="x", pady=6)
 
-        label_titulo_estado = ttk.Label(frame_expresiones, text = "Estado de Proposiciones", font = ("Kravnika", 10, "bold"))
+        label_titulo_estado = ttk.Label(frame_expresiones, text = "Estado de Proposiciones", font = ("Console", 14, "bold"))
         label_titulo_estado.pack(anchor = "w", pady = (0,4))
 
         frame_scroll_estado = ttk.Frame(frame_expresiones)
@@ -52,10 +52,10 @@ class Reglas(ttk.LabelFrame):
             "i = 0\nj = 0\nk = 0\nl = 0\ne = 0\n"
             "f = 0\ng = 0\nh = 0\npn = 0\nq = 0"
         )
-        self.label_estado = ttk.Label(scroll_frame_estado, text=texto_estado_inicial, font=("Kravnika", 10), justify="left")
+        self.label_estado = ttk.Label(scroll_frame_estado, text="Registra una palabra para iniciar...", font=("Console", 14), justify="left")
         self.label_estado.pack(anchor="nw", padx=5)
 
-        lbl_reglas = ttk.Label(self, text="Reglas", font=("Kravnika", 14, "bold"))
+        lbl_reglas = ttk.Label(self, text="Reglas", font=("Console", 16, "bold"))
         lbl_reglas.pack(anchor="w", pady=(15, 8))
         frame_proposiciones = ttk.Frame(self)
         frame_proposiciones.pack(side=tk.TOP, fill="both", expand=True, pady=(10, 0))
@@ -81,7 +81,7 @@ class Reglas(ttk.LabelFrame):
             "c = Termina con :\n"
             "y = Termina con .\n"
             "z = Es la ultima letra\n"
-            "i = Contiene (Jorge, Jonathan, Fabritzio, Rodrigo) en la palabra\n"
+            "i = Contiene: Jorge, Jonathan, Fabritzio, Rodrigo\n"
             "j = Contiene digitos\n"
             "k = Tiene simbolos especiales\n"
             "l = Son digitos del 1 al 9 \n"
@@ -92,8 +92,8 @@ class Reglas(ttk.LabelFrame):
             "pn = Palabra enésima es valida\n"
             "q = Palabra / Cadena valida\n"
         )
-        label_proposiciones = ttk.Label(scrollable_frame, text=texto_proposiciones, font=("Kravnika", 10), justify="left")
-        label_proposiciones.pack(anchor="w", pady=(0, 10))
+        label_proposiciones = ttk.Label(scrollable_frame, text=texto_proposiciones, font=("Console", 12), justify="left")
+        label_proposiciones.pack(anchor="w", pady=(0, 10), expand=True)
 
 
         def _on_mousewheel(event):
@@ -101,8 +101,57 @@ class Reglas(ttk.LabelFrame):
 
         canvas.bind_all("<MouseWheel>", _on_mousewheel)
 
-
-    def actualizar_estado(self, p : int = 0, q : int = 0, r : int = 0, s : int = 0):
-        #Metodo para actualizar el estado de las proposiciones en la interfaz
-        texto_actualizado = f"p = {p}\nq = {q}\nr = {r}\ns = {s}"
-        self.label_estado.config(text=texto_actualizado)
+    #THIRD, SET WORDS
+    def set_text_word(self, n,
+                    content,
+                    output,
+                    init_quotation, 
+                    init_hyphen,
+                    contain_names,
+                    have_digits,
+                    have_special_symbols,
+                    digit19):
+        return  f"""
+        P{n}: {content}
+        {{( ¬{contain_names} ∧ [{have_digits} ∨ ({have_special_symbols} ↔ {digit19})])}}
+        ∧ {{({init_quotation} ⊻ {init_hyphen})}} → {output}
+        P{n} = {output}
+--------------------------------
+"""
+                
+    #Sin uso
+    """a= {init_quotation}
+        b= {init_hyphen}
+        i = {contain_names}
+        j = {have_digits}
+        k = {have_special_symbols}
+        l = {digit19}
+    """
+                
+    # SECODS, SET PHRASES
+    def set_phrases(self, content, 
+                    output, words,
+                    open_interogation,
+                    close_interogation,
+                    open_exclamation,
+                    close_exclamation):
+        return f"""
+> Oracion: {content}
+    Cierra signos de interrogacion: {open_interogation}
+    Aprertura signos de interrogacion: {close_interogation}
+    Aprertura signos de exclamación: {open_exclamation}
+    Cierra signos de exclamación: {close_exclamation}
+    
+    Palabras: 
+    {words}
+==============================
+"""
+    
+    # FIRST, SET PROPOSITION TEXT
+    def set_text_propositions(self, content, output, prhases):
+        return f"""
+● {content}
+{prhases}
+salida final: {output}
+                    """
+                

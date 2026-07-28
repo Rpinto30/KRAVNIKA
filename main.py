@@ -6,6 +6,7 @@ from PIL import Image, ImageTk
 import subprocess
 import os
 from reglas import Reglas
+import json
 
 # Ruta al ejecutable compilado
 PARENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -68,50 +69,41 @@ class AplicacionAutomata(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Validador de Cadenas - Autómata KRAVNIKA")
-        self.geometry("1080x600")
+        self.geometry("1600x920")
         self.resizable(True, True)
 
         self.historial = [] 
         self.in_kravnika = True
-
+        self.actual_str = ""
         self._construir_widgets()
 
     def _construir_widgets(self):
         padding = {"padx": 12, "pady": 8}
-
-        #opened_image = Image.open(os.path.join(PARENT_DIR, "kravnika_creator.png"))
-        #tk_image = ImageTk.PhotoImage(opened_image)
-        #label_fondo = tk.Label(self, image=tk_image)
-        #label_fondo.place(x=0, y=0, relwidth=1, relheight=1)
-        # Entrada Us.
+        
         top_frame_right = ttk.Frame(self)
         top_frame_right.pack()
         
         ttk.Label(top_frame_right, text="K\"RAVNIKA", font=('Kravnika', 50)).pack(expand=True, anchor="center", pady=(15,0))
         ttk.Label(top_frame_right, text="KRAVNIKA", font=('Arial', 13, 'bold')).pack(expand=True, anchor="center", pady=(0, 30))
         
-        
-        
-        #raw_img = Image.open(os.path.join(PARENT_DIR, "kravnika_creator.png"))
-        #resized_img = raw_img.resize((350, 550), Image.Resampling.LANCZOS)
-        #tk_img = ImageTk.PhotoImage(resized_img) 
-
-        # 3. Use the converted object in your widget
-        #label = tk.Label(self, image=tk_img)
-        #label.pack(expand= True, fill='both')
-
-        # Crucial: Keep a reference to prevent garbage collection
-        #label.image = tk_img 
         main_container = ttk.Frame(self)
         main_container.pack(fill="both", expand=True, padx=12, pady=12)
 
         self.panel_reglas = Reglas(main_container)
         self.panel_reglas.pack(side =tk.LEFT, fill="both", expand=True, padx=(0,10), pady=5)
 
-
         global_frame_right = ttk.Frame(main_container)
         global_frame_right.pack(side=tk.LEFT, fill="both", expand=True, padx=(10, 0))
         
+        global_frame_jorge = ttk.Frame(main_container)
+        global_frame_jorge.pack(side=tk.RIGHT, fill="both", expand=True, padx=(10, 0))
+                
+        raw_img = Image.open(os.path.join(PARENT_DIR, "kravnika_creator.png"))
+        resized_img = raw_img.resize((350, 550), Image.Resampling.LANCZOS)
+        tk_img = ImageTk.PhotoImage(resized_img) 
+        label = tk.Label(global_frame_jorge, image=tk_img)
+        label.pack(expand= True, fill='both')
+        label.image = tk_img 
         
         frame_entrada = ttk.Frame(global_frame_right)
         frame_entrada.pack(fill="x", **padding)
@@ -192,13 +184,11 @@ class AplicacionAutomata(tk.Tk):
 
     def validar_cadena(self):
         cadena = self.entry_cadena.get().strip()
-
+        self.actual_str = cadena
         if not cadena:
             messagebox.showwarning("Aviso", "Escribe una cadena antes de validar.")
             return
-
-        #deshabilitamos el botón 
-        #ayudando el envio de varias cadenas
+        self.actual_str
         self.boton_validar.config(state="disabled")
         self.update_idletasks()
 
@@ -214,8 +204,6 @@ class AplicacionAutomata(tk.Tk):
             self.label_resultado.config(text=texto_resultado, foreground="red")
 
         #pantalla historial
-        
-# 3. Insertar aplicando la etiqueta según el resultado
         texto_res = "Válida" if es_valida else "Inválida"
         tag_res = "valid" if es_valida else "invalid"
 
@@ -226,7 +214,51 @@ class AplicacionAutomata(tk.Tk):
 
         self.entry_cadena.delete(0, tk.END)
         self.entry_cadena.focus()
-
+        self.calc_proposition()
+    
+    def calc_proposition(self):
+        with open(os.path.join(PARENT_DIR, "Automate", "proposition.json"), "r") as file:
+            data = json.load(file)
+            all_text = ""
+            phrases = ""
+            for pra in data['sentences']:
+                words = ""
+                for n, wor in enumerate(pra['words']):
+                    words += self.panel_reglas.set_text_word(
+                        n+1,
+                        wor['content'],
+                        wor['output'],
+                        wor['init_quotation'],
+                        wor['init_hyphen'],
+                        wor['contain_names'],
+                        wor['have_digits'],
+                        wor['have_special_charts_digits'],
+                        wor['next_special_chart_between_19']
+                    )
+                #words = [self.panel_reglas.set_text_word for x in pra['words']]
+                
+                phrases += self.panel_reglas.set_phrases(
+                    pra['content'],
+                    pra['output'],
+                    words,
+                    pra['init_interogation'],
+                    pra['end_interogation'],
+                    pra['init_exclamation'],
+                    pra['end_exclamation']
+                )
+            all_text = self.panel_reglas.set_text_propositions(
+                self.actual_str,
+                data['output'],
+                phrases
+            )
+        
+        self.panel_reglas.label_estado.config(text=all_text)
+            #self.panel_reglas.actualizar_estado(
+                
+            #)
+        
+        print(all_text)
+        
     def limpiar_historial(self):
         respuesta = messagebox.askyesno(
             "Confirmar", "¿Seguro que quieres borrar todo el historial?"

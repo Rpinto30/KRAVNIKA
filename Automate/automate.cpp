@@ -55,14 +55,18 @@ typedef struct Word{
     }
 
         bool init_quotation(){
-            char c = alphaNumeric_mayusc(__context)[1];
-            if (alphaNumeric_mayusc(__context).substr(2).find('\"') != string::npos) return false;
+            string new_context = alphaNumeric_mayusc(__context);
+            if (new_context.length() < 2) return false; 
+            char c = new_context[1];
+            if (new_context.substr(2).find('\"') != string::npos) return false;
             return (c == '\"') ? true : false;
         }
 
         bool init_hyphen(){
-            char c = alphaNumeric_mayusc(__context)[1];
-            if (alphaNumeric_mayusc(__context).substr(2).find('-') != string::npos) return false;
+            string new_context = alphaNumeric_mayusc(__context);
+            if (new_context.length() < 2) return false;
+            char c = new_context[1];
+            if (new_context.substr(2).find('-') != string::npos) return false;
             return (c == '-') ? true : false;
         }
 
@@ -72,7 +76,6 @@ typedef struct Word{
             for(string name : names){
                 if (alpha_numeric_context.find(name) != string::npos) return true;
             }
-           
             return false;
         }
 
@@ -178,7 +181,16 @@ typedef struct Block{
                 result_words = temp;
             }
 
-            bool expression_symbols = Logica::OR(symbol_oc('?'), symbol_oc('!'));
+            bool expression_symbols = false;
+            if (__context.find('?') != string::npos && __context.find('!') != string::npos ){
+                expression_symbols = Logica::AND(symbol_oc('?'), symbol_oc('!')); //tiene ambas
+            } else if (__context.find('?') != string::npos && __context.find('!') == string::npos){
+                expression_symbols = symbol_oc('?');
+            } else if (__context.find('?') == string::npos && __context.find('!') != string::npos){
+                expression_symbols = symbol_oc('!');
+            } else{
+                expression_symbols = true;
+            }
             return Logica::AND(result_words, expression_symbols);
         } 
 
@@ -187,11 +199,14 @@ typedef struct Block{
         bool init_interogation = false;
         bool close_interogation = false;
         bool symbol_oc(char open){
+            bool added = false;
             stack<char> simbol_stack;
             for(char _ : __context){
-                
                 if (!simbol_stack.empty()){
-                    if (_ == open) simbol_stack.pop();
+                    if (_ == open) {
+                        simbol_stack.pop();
+                        
+                    }
                     switch(_){
                         case '?': init_interogation = true;
                         break;
@@ -199,18 +214,21 @@ typedef struct Block{
                         break;
                     }
                 } else{
-                    if (_ == open) simbol_stack.push(_);
+                    if (_ == open) {
+                        simbol_stack.push(_);
+                        added = true;
+                        
+                    }
                     switch(_){
                         case '?': close_interogation = true;
                         break;
-                        case '!': close_exclamation= true;
+                        case '!': close_exclamation = true;
                         break;
                     }
                 }
             }
             
-            if (simbol_stack.empty()) { return true; }
-            
+            if (simbol_stack.empty() && added) { return true; }
             return false;
         }
 
@@ -317,5 +335,7 @@ int main(int argc, char* argv[]){
     jsonFile.close_json();
     jsonFile.create_json();
 
+    //string a;
+    //cin>>a;
     return aut->get_result();
 }
