@@ -1,0 +1,30 @@
+{
+"output": 1
+,
+"sentences": [
+{
+"content": "h\"ola.",
+"output": 1,
+"init_exclamation": 0,
+"end_exclamation": 0,
+"init_interogation": 0,
+"end_interogation": 0,
+"split_by_double_dot": 1,
+"end_dot": 1,
+"last_letter": 1
+,
+"words": [
+{
+"content": "h\"ola.",
+"output": 1,
+"init_quotation": 1,
+"init_hyphen": 0,
+"contain_names": 0,
+"have_digits": 0,
+"have_special_charts_digits": 0,
+"next_special_chart_between_19": 0
+}
+]
+}
+]
+}
