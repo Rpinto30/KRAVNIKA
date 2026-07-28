@@ -5,7 +5,7 @@ from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
 import subprocess
 import os
-
+from reglas import Reglas
 
 # Ruta al ejecutable compilado
 PARENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -89,8 +89,7 @@ class AplicacionAutomata(tk.Tk):
         ttk.Label(top_frame_right, text="K\"RAVNIKA", font=('Kravnika', 50)).pack(expand=True, anchor="center", pady=(15,0))
         ttk.Label(top_frame_right, text="KRAVNIKA", font=('Arial', 13, 'bold')).pack(expand=True, anchor="center", pady=(0, 30))
         
-        global_frame_right = ttk.Frame(self)
-        global_frame_right.pack(side=tk.RIGHT)
+        
         
         #raw_img = Image.open(os.path.join(PARENT_DIR, "kravnika_creator.png"))
         #resized_img = raw_img.resize((350, 550), Image.Resampling.LANCZOS)
@@ -105,21 +104,13 @@ class AplicacionAutomata(tk.Tk):
         main_container = ttk.Frame(self)
         main_container.pack(fill="both", expand=True, padx=12, pady=12)
 
-        
-        frame_reglas = ttk.LabelFrame(main_container, text="Reglas", padding=10)
-        frame_reglas.pack(side=tk.LEFT, fill="both", expand=True, padx=(0, 6))
+        self.panel_reglas = Reglas(main_container)
+        self.panel_reglas.pack(side =tk.LEFT, fill="both", expand=True, padx=(0,10), pady=5)
 
-        # Texto o contenido de las reglas
-        texto_reglas = (
-            "1. La cadena debe iniciar con (\") o (-).\n"
-            "2. Debe finalizar con un punto (.).\n"
-            "3. Las palabras se separan por dos puntos (:).\n"
-            "4. No se permiten nombres propios en el texto."
-        )
-        lbl_reglas = ttk.Label(frame_reglas, text=texto_reglas, font=("Arial", 10), justify="left")
-        lbl_reglas.pack(anchor="nw")
-        global_frame_middle = ttk.Frame(self)
-        global_frame_middle.pack(side=tk.LEFT)
+
+        global_frame_right = ttk.Frame(main_container)
+        global_frame_right.pack(side=tk.LEFT, fill="both", expand=True, padx=(10, 0))
+        
         
         frame_entrada = ttk.Frame(global_frame_right)
         frame_entrada.pack(fill="x", **padding)
