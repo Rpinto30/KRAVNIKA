@@ -1,21 +1,15 @@
 #Entrada Usuario/Historial Cadenas
 import tkinter as tk
+from tkinter import font as tkfont
 from tkinter import ttk, messagebox
+from PIL import Image, ImageTk
 import subprocess
 import os
-<<<<<<< HEAD
- 
- 
-# Ruta al ejecutable compilado en C++.
-#RUTA_EJECUTABLE = os.path.join("Automate", "automate.cpp")
-RUTA_EJECUTABLE = r"C:\Users\rodri\OneDrive\Documentos\KRAVNIKA\Automate\output.exe"
-print(RUTA_EJECUTABLE)
-=======
->>>>>>> 3741445473a2fa8f5718d80758a613c9a8dff266
 
 
 # Ruta al ejecutable compilado
-RUTA_EJECUTABLE = os.path.join("..", "Automate", "automate")
+PARENT_DIR = os.path.dirname(os.path.abspath(__file__))
+RUTA_EJECUTABLE = os.path.join(PARENT_DIR, "Automate", "output.exe")
 
 # Palabras que el programa de C++ imprime para indicar el resultado.
 # Ajustarlos como el automata lo indique
@@ -24,15 +18,12 @@ TEXTO_INVALIDA = "invalida"
 
 
 def ejecutar_automata(cadena: str) -> tuple[bool, str]:
-<<<<<<< HEAD
-=======
     """
     Ejecuta el programa de C++ de forma INTERACTIVA: lo arranca, le manda
     la cadena por stdin (como si la tecleraras en consola) y espera a que
     termine para leer lo que imprimió (stdout).
     Devuelve (es_valida, mensaje_completo_del_programa).
     """
->>>>>>> 3741445473a2fa8f5718d80758a613c9a8dff266
     try:
         proceso = subprocess.Popen(
             [RUTA_EJECUTABLE],
@@ -42,8 +33,6 @@ def ejecutar_automata(cadena: str) -> tuple[bool, str]:
             text=True,
         )
 
-        # communicate() envía la cadena (+ salto de línea, como un Enter)
-        # y espera a que el programa termine
         stdout_salida, stderr_salida = proceso.communicate(
             input=cadena + "\n", timeout=5
         )
@@ -51,9 +40,12 @@ def ejecutar_automata(cadena: str) -> tuple[bool, str]:
         salida = (stdout_salida or "").strip()
         salida_lower = salida.lower()
 
-        if TEXTO_VALIDA.lower() in salida_lower:
+        print(salida)
+
+        if salida == '1':
+            print('yaaaaaaaaaaaaaaa')
             return True, salida
-        elif TEXTO_INVALIDA.lower() in salida_lower:
+        elif salida == '0':
             return False, salida
         else:
             #si no se reconoce el texto imprimimos el texto desconocido
@@ -69,36 +61,58 @@ def ejecutar_automata(cadena: str) -> tuple[bool, str]:
         return False, "El programa tardó demasiado en responder."
     except Exception as e:
         return False, f"Error inesperado: {e}"
-<<<<<<< HEAD
- 
- 
-print(ejecutar_automata("Hola mundo"))
- 
-=======
 
 
->>>>>>> 3741445473a2fa8f5718d80758a613c9a8dff266
 class AplicacionAutomata(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Validador de Cadenas - Autómata KRAVNIKA")
-        self.geometry("520x480")
-        self.resizable(False, False)
+        self.geometry("1080x600")
+        self.resizable(True, True)
 
-        self.historial = []  #lista de (cadena, resultado_texto)
+        self.historial = [] 
+        self.in_kravnika = True
 
         self._construir_widgets()
 
     def _construir_widgets(self):
         padding = {"padx": 12, "pady": 8}
 
+        #opened_image = Image.open(os.path.join(PARENT_DIR, "kravnika_creator.png"))
+        #tk_image = ImageTk.PhotoImage(opened_image)
+        #label_fondo = tk.Label(self, image=tk_image)
+        #label_fondo.place(x=0, y=0, relwidth=1, relheight=1)
         # Entrada Us.
-        frame_entrada = ttk.Frame(self)
+        top_frame_right = ttk.Frame(self)
+        top_frame_right.pack()
+        
+        ttk.Label(top_frame_right, text="K\"RAVNIKA", font=('Kravnika', 50)).pack(expand=True, anchor="center", pady=(15,0))
+        ttk.Label(top_frame_right, text="KRAVNIKA", font=('Arial', 13, 'bold')).pack(expand=True, anchor="center", pady=(0, 30))
+        
+        global_frame_right = ttk.Frame(self)
+        global_frame_right.pack(side=tk.RIGHT)
+        
+        raw_img = Image.open(os.path.join(PARENT_DIR, "kravnika_creator.png"))
+        resized_img = raw_img.resize((350, 550), Image.Resampling.LANCZOS)
+        tk_img = ImageTk.PhotoImage(resized_img) 
+
+        # 3. Use the converted object in your widget
+        label = tk.Label(self, image=tk_img)
+        label.pack(expand= True, fill='both')
+
+        # Crucial: Keep a reference to prevent garbage collection
+        label.image = tk_img 
+
+        
+        global_frame_middle = ttk.Frame(self)
+        global_frame_middle.pack(side=tk.LEFT)
+        
+        frame_entrada = ttk.Frame(global_frame_right)
         frame_entrada.pack(fill="x", **padding)
 
         ttk.Label(frame_entrada, text="Cadena a validar:").pack(anchor="w")
 
-        self.entry_cadena = ttk.Entry(frame_entrada, font=("Consolas", 12))
+        self.entry_cadena = ttk.Entry(frame_entrada, font=("Kravnika", 30))
         self.entry_cadena.pack(fill="x", pady=(4, 8))
         self.entry_cadena.bind("<Return>", lambda event: self.validar_cadena())
 
@@ -109,25 +123,31 @@ class AplicacionAutomata(tk.Tk):
 
         # Resultado actual
         self.label_resultado = ttk.Label(
-            self, text="", font=("Segoe UI", 12, "bold")
+            global_frame_right, text="", font=("Segoe UI", 12, "bold")
         )
         self.label_resultado.pack(pady=(4, 10))
 
         #history
-        ttk.Label(self, text="Historial:").pack(anchor="w", padx=12)
+        ttk.Label(global_frame_right, text="Historial:").pack(anchor="w", padx=12)
 
-        frame_historial = ttk.Frame(self)
+        frame_historial = ttk.Frame(global_frame_right)
         frame_historial.pack(fill="both", expand=True, padx=12, pady=(4, 12))
 
-        columnas = ("cadena", "resultado")
+        columnas = ("cadena")
         self.tabla_historial = ttk.Treeview(
             frame_historial, columns=columnas, show="headings", height=12
         )
+        
         self.tabla_historial.heading("cadena", text="Cadena")
-        self.tabla_historial.heading("resultado", text="Resultado")
+        #self.tabla_historial.heading("resultado", text="Resultado")
         self.tabla_historial.column("cadena", width=260)
-        self.tabla_historial.column("resultado", width=200)
+        #self.tabla_historial.column("resultado", width=200)
         self.tabla_historial.pack(side="left", fill="both", expand=True)
+
+        style = ttk.Style()
+        style.configure("Treeview", rowheight=30, font = ('Kravnika', 30)) 
+        self.tabla_historial.tag_configure("valid", foreground="green")
+        self.tabla_historial.tag_configure("invalid", foreground="red")
 
         scrollbar = ttk.Scrollbar(
             frame_historial, orient="vertical", command=self.tabla_historial.yview
@@ -135,10 +155,34 @@ class AplicacionAutomata(tk.Tk):
         self.tabla_historial.configure(yscrollcommand=scrollbar.set)
         scrollbar.pack(side="right", fill="y")
 
+        frame_funtions = ttk.Frame(frame_historial)
+        frame_funtions.pack(fill="y", padx=12)
+
+        def change_lenguague():
+            if self.in_kravnika:
+                style.configure("Treeview", rowheight=30, font = ('Console', 15)) 
+                lenguage.config(text="Kravnika")
+                self.in_kravnika = False
+                
+                for n,item in enumerate(self.tabla_historial.get_children()):
+                    print(self.historial[n][0].replace(':', ' '))
+                    self.tabla_historial.item(item, values= (self.historial[n][0].replace(':', '_').replace('\"','')))
+            else:
+                style.configure("Treeview", rowheight=30, font = ('Kravnika', 30)) 
+                lenguage.config(text="Español")
+                self.in_kravnika = True
+                for n,item in enumerate(self.tabla_historial.get_children()):
+                                    self.tabla_historial.item(item, values= (self.historial[n][0]))
+        
+        lenguage = ttk.Button(
+                frame_historial, text="Español", width=15, command=  change_lenguague)
+        lenguage.pack(anchor='center',fill='y')
+        
         #limpiar history
         ttk.Button(
-            self, text="Limpiar historial", command=self.limpiar_historial
-        ).pack(pady=(0, 12))
+            frame_historial, text="Limpiar historial", width=15, command=self.limpiar_historial
+        ).pack(pady=(0, 0), fill='y')
+        
 
     def validar_cadena(self):
         cadena = self.entry_cadena.get().strip()
@@ -156,16 +200,22 @@ class AplicacionAutomata(tk.Tk):
 
         self.boton_validar.config(state="normal")
 
-        if es_valida:
-            texto_resultado = "✅ Válida"
+        if es_valida == 1:
+            texto_resultado = "✅ La cadena es valida"
             self.label_resultado.config(text=texto_resultado, foreground="green")
         else:
-            texto_resultado = "❌ Inválida"
+            texto_resultado = "❌ La cadena no es valida"
             self.label_resultado.config(text=texto_resultado, foreground="red")
-#Agregar pantalla de historial
-        self.tabla_historial.insert(
-            "", 0, values=(cadena, "Válida" if es_valida else "Inválida")
-        )
+
+        #pantalla historial
+        
+# 3. Insertar aplicando la etiqueta según el resultado
+        texto_res = "Válida" if es_valida else "Inválida"
+        tag_res = "valid" if es_valida else "invalid"
+
+        self.tabla_historial.insert("", "end", values=(cadena), tags=(tag_res))
+
+                
         self.historial.append((cadena, es_valida))
 
         self.entry_cadena.delete(0, tk.END)
