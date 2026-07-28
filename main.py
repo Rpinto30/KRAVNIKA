@@ -92,18 +92,32 @@ class AplicacionAutomata(tk.Tk):
         global_frame_right = ttk.Frame(self)
         global_frame_right.pack(side=tk.RIGHT)
         
-        raw_img = Image.open(os.path.join(PARENT_DIR, "kravnika_creator.png"))
-        resized_img = raw_img.resize((350, 550), Image.Resampling.LANCZOS)
-        tk_img = ImageTk.PhotoImage(resized_img) 
+        #raw_img = Image.open(os.path.join(PARENT_DIR, "kravnika_creator.png"))
+        #resized_img = raw_img.resize((350, 550), Image.Resampling.LANCZOS)
+        #tk_img = ImageTk.PhotoImage(resized_img) 
 
         # 3. Use the converted object in your widget
-        label = tk.Label(self, image=tk_img)
-        label.pack(expand= True, fill='both')
+        #label = tk.Label(self, image=tk_img)
+        #label.pack(expand= True, fill='both')
 
         # Crucial: Keep a reference to prevent garbage collection
-        label.image = tk_img 
+        #label.image = tk_img 
+        main_container = ttk.Frame(self)
+        main_container.pack(fill="both", expand=True, padx=12, pady=12)
 
         
+        frame_reglas = ttk.LabelFrame(main_container, text="Reglas", padding=10)
+        frame_reglas.pack(side=tk.LEFT, fill="both", expand=True, padx=(0, 6))
+
+        # Texto o contenido de las reglas
+        texto_reglas = (
+            "1. La cadena debe iniciar con (\") o (-).\n"
+            "2. Debe finalizar con un punto (.).\n"
+            "3. Las palabras se separan por dos puntos (:).\n"
+            "4. No se permiten nombres propios en el texto."
+        )
+        lbl_reglas = ttk.Label(frame_reglas, text=texto_reglas, font=("Arial", 10), justify="left")
+        lbl_reglas.pack(anchor="nw")
         global_frame_middle = ttk.Frame(self)
         global_frame_middle.pack(side=tk.LEFT)
         
