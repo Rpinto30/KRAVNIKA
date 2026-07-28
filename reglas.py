@@ -6,6 +6,9 @@ class Reglas(ttk.LabelFrame):
     def __init__(self,parent):
         super().__init__(parent, padding = 10)
 
+        label_resumen = ttk.Label(self, text = "Resumen", font = ("Kravnika", 14, "bold"))
+        label_resumen.pack(anchor = "w", pady = (0,8))
+
 
         frame_expresiones = ttk.Frame(self, padding=10)
         frame_expresiones.pack(side=tk.TOP, fill="both", expand=True, padx=12, pady=12)
@@ -14,7 +17,7 @@ class Reglas(ttk.LabelFrame):
         label_titulo_expresiones.pack(anchor = "w", pady = (0,4))
         texto_expresiones = (
             "{[(e ↔ f) ∨ (g ↔ h)] ∧ ¬i ∧ [j ∨ (k ↔ l)]}\n"
-            " ∧ {(a ⊕ b) ∧ [c ∧ (z ↔ y)]} → Pn\n"
+            " ∧ {(a ⊻ b) ∧ [c ∧ (z ↔ y)]} → Pn\n"
             "P1 ∧ P2 ∧ P3 ∧ ... ∧ Pn → q"
         )
         label_expresiones = ttk.Label(frame_expresiones, text=texto_expresiones, font=("Kravnika", 10), justify="left")
@@ -23,8 +26,11 @@ class Reglas(ttk.LabelFrame):
         separador = ttk.Separator(frame_expresiones, orient="horizontal")
         separador.pack(fill="x", pady=6)
 
-        label_titulo_estado = ttk.Label(self, text = "Estado de Proposiciones", font = ("Kravnika", 10, "bold"))
+        label_titulo_estado = ttk.Label(frame_expresiones, text = "Estado de Proposiciones", font = ("Kravnika", 10, "bold"))
         label_titulo_estado.pack(anchor = "w", pady = (0,4))
+
+        frame_scroll_estado = ttk.Frame(frame_expresiones)
+        frame_scroll_estado.pack(fill="x", expand=False)
 
         canvas_estado = tk.Canvas(frame_expresiones, highlightthickness=0, width=280, height=80)
         scroll_estado = ttk.Scrollbar(frame_expresiones, orient="vertical", command=canvas_estado.yview)
@@ -49,7 +55,9 @@ class Reglas(ttk.LabelFrame):
         self.label_estado = ttk.Label(scroll_frame_estado, text=texto_estado_inicial, font=("Kravnika", 10), justify="left")
         self.label_estado.pack(anchor="nw", padx=5)
 
-        frame_proposiciones = ttk.LabelFrame(self, text="Reglas", padding=5)
+        lbl_reglas = ttk.Label(self, text="Reglas", font=("Kravnika", 14, "bold"))
+        lbl_reglas.pack(anchor="w", pady=(15, 8))
+        frame_proposiciones = ttk.Frame(self)
         frame_proposiciones.pack(side=tk.TOP, fill="both", expand=True, pady=(10, 0))
 
         canvas = tk.Canvas(frame_proposiciones, highlightthickness=0, width=280, height=120)
@@ -70,7 +78,7 @@ class Reglas(ttk.LabelFrame):
         texto_proposiciones = (
             "a = Inicia con \" \n"
             "b = Inicia con -\n"
-            "c = Termina con :\"\n"
+            "c = Termina con :\n"
             "y = Termina con .\n"
             "z = Es la ultima letra\n"
             "i = Contiene (Jorge, Jonathan, Fabritzio, Rodrigo) en la palabra\n"
