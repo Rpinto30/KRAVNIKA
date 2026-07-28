@@ -5,8 +5,9 @@
 #include <stack> //stack
 #include <algorithm>
 #include "logical-connector-lib.h"
+#include "json_writte.h"
 using namespace std;
-
+using namespace JsonWritter;
 
 typedef struct Word{
     private:
@@ -40,14 +41,17 @@ typedef struct Word{
         bool numbers = Logica::IMPLIES(
             Logica::OR(Logica::OR(cent_valid(), dec_valid()), thousand_valid())
             ,there_digits());
-
-        cout<<"------"<<__context<<"------"<<endl;
-        cout<<"Mayuscula: "<<capitalize_letter<<endl;
-        cout<<"Nombres: "<<names<<endl;
-        cout<<"Numeros: "<<numbers<<endl;
-     
-
         result = capitalize_letter & names & numbers;
+    }
+
+    Word_json get_word_json(){
+        bool special_charts = false;
+        if (__context.find("|>;") != string::npos || __context.find("|;") != string::npos || __context.find("||") != string::npos)
+        special_charts = true;
+
+        Word_json word(__context, result, init_quotation(), init_hyphen(), contain_name(), 
+        there_digits(), special_charts, Logica::OR(Logica::OR(cent_valid(), dec_valid()), thousand_valid()));
+        return word;
     }
 
         bool init_quotation(){
@@ -77,6 +81,7 @@ typedef struct Word{
         }
 
         // NUMEROS
+        bool valid_digit_after_special_chart;
         bool thousand_valid(){
             size_t index_thousand = 0;
             string sub_thousand = __context;
@@ -145,18 +150,25 @@ typedef struct Block{
         size_t result_t;
 
         //VALID WORDS
+        bool split_double_dot = false;
+        bool end_dot;
+        bool last_letter;
         vector<Word> words; 
         bool set_words(){
             string word = "";
             for (size_t index = 0; index < this->__context.length(); index++){
                 word += this->__context[index];
                 if (this->__context[index] == ':' || this->__context[index] == '.'){ //Cut Phrase
+                    split_double_dot = true;
+                    end_dot = true;
+                    last_letter = true;
                     words.insert(words.end(), Word{word});
                     word = "";
                 }
             }
             
             if (!word.empty()) { 
+                split_double_dot = false;
                 return false;
             }
 
@@ -170,15 +182,30 @@ typedef struct Block{
             return Logica::AND(result_words, expression_symbols);
         } 
 
+        bool init_exclamation = false;
+        bool close_exclamation = false;
+        bool init_interogation = false;
+        bool close_interogation = false;
         bool symbol_oc(char open){
             stack<char> simbol_stack;
-            cout<<__context;
             for(char _ : __context){
                 
                 if (!simbol_stack.empty()){
                     if (_ == open) simbol_stack.pop();
+                    switch(_){
+                        case '?': init_interogation = true;
+                        break;
+                        case '!': init_exclamation = true;
+                        break;
+                    }
                 } else{
                     if (_ == open) simbol_stack.push(_);
+                    switch(_){
+                        case '?': close_interogation = true;
+                        break;
+                        case '!': close_exclamation= true;
+                        break;
+                    }
                 }
             }
             
@@ -192,6 +219,16 @@ typedef struct Block{
             result_t = set_words();
         } 
 
+        Sentence get_sentence_json(){
+            Sentence sentence(__context, result_t, init_exclamation, close_exclamation, 
+                init_interogation, close_interogation, split_double_dot, end_dot, last_letter);
+            for (auto word : words){
+                sentence.set_word(word.get_word_json());
+            }
+            sentence.close_sentence();
+            return sentence;
+        }
+
         int get_result() { return result_t; }
         string get_context() { return __context; }
 
@@ -203,13 +240,8 @@ class Automate{
     enum STATE { INIT, PHRASE, WORD, INVALID };
     STATE state;
     bool result = false; 
-    
-    //Only call when state == INVALID
-    void invalid_action(){
-        cout<<"Cadena no valida"<<endl;
-    }
 
-    vector<Block> phrases; 
+
     int set_phrases(){
         string word = "";
         for (size_t index = 0; index < this->context.length(); index++){
@@ -217,18 +249,22 @@ class Automate{
             if (this->context[index] == '.'){ //Cut Phrase
                 phrases.insert(phrases.end(), Block{word});
                 word = "";
+                this->end_dot = true;
+                this->last_letter = true;
             }
         }
         
         if (!word.empty()) { 
             this->state = INVALID;
+            this->last_letter = false;
+            this->end_dot = false;
+            phrases.insert(phrases.end(), Block{context});
             return 0;
         }
         this->state = PHRASE;
         return 1;
     }
 
-    
     void check_context(){
         set_phrases();
         bool final_result = true;    
@@ -240,20 +276,17 @@ class Automate{
                 }
             break;
             case INVALID:
-                invalid_action();
+                final_result = false;
             break;
         }
     
         result = final_result;
         if (final_result == true){
-            cout<<endl<<endl;
-            cout<<"LA CADENA INTRODUCIDA ES VALIDA"<<endl;
+            cout<<"1"<<endl;
         } else{
-            cout<<endl<<endl;
-            cout<<"LA CADENA INTRODUCIDA NO ES VALIDA"<<endl;
+            cout<<"0"<<endl;
         }
     }
-
 
     ~Automate(){ delete this; }
 
@@ -261,9 +294,11 @@ class Automate{
         Automate(string context): context(context),  state(INIT) {
             check_context();
         }
-
+        vector<Block> phrases; 
         string get_context(){ return this->context; }
         bool get_result(){ return result; }
+        bool end_dot = false;
+        bool last_letter = false;
 };
 
 int main(int argc, char* argv[]){
@@ -274,20 +309,13 @@ int main(int argc, char* argv[]){
     }
     else cin>>Cadena;
 
-    // if (Cadena == "a") Cadena = "N\"ACI:E\"L:A\"NIO|>;27+|>;5||12.H-OLA:ESTO:E-S:UNA:P\"RUE\"BA.ES\"TA:E-\"S:L\"A:T-\"ERCERA:FR|>;51ASE.M-e:l\"lamo:rodrigo235.";
     Automate* aut = new Automate(Cadena);
-    string a;
+    Json jsonFile(aut->get_result());
+    for (auto sentence : aut->phrases){
+        jsonFile.set_sentence(sentence.get_sentence_json());
+    }
+    jsonFile.close_json();
+    jsonFile.create_json();
 
-    //cout<<aut->get_context()<<endl;
-    
     return aut->get_result();
 }
-// TODO
-// convertir en tokens 
-// realizar separacion de oracion segun temine con . solo si es el ultimo caracter - EN GENERAL (LIIIIIIIIIIIIIIIIIIIIIIIIIIISTO)
-// por cada frase:
-//  -separacion de palabras segun inicie con (" o ') y termine con (: si no es el ultimo caracter) - EN ORACION
-//  para todos los tokens realizar la verificacion:
-//      - verificar existencia de nombres dentro del token - EN PALABRA
-//      - verificar signos de apertura y cierre - EN PALABRA
-//      - verificar si hay numeros en la palabra - EN PALABRA
