@@ -81,8 +81,15 @@ class AplicacionAutomata(tk.Tk):
         top_frame_right = ttk.Frame(self)
         top_frame_right.pack()
         
-        ttk.Label(top_frame_right, text="K\"RAVNIKA", font=('Kravnika', 50)).pack(expand=True, anchor="center", pady=(15,0))
-        ttk.Label(top_frame_right, text="KRAVNIKA", font=('Arial', 13, 'bold')).pack(expand=True, anchor="center", pady=(0, 30))
+        #ttk.Label(top_frame_right, text="K\"RAVNIKA", font=('Kravnika', 50)).pack(expand=True, anchor="center", pady=(15,0))
+        #ttk.Label(top_frame_right, text="KRAVNIKA", font=('Arial', 13, 'bold')).pack(expand=True, anchor="center", pady=(0, 30))
+        header_img = Image.open(os.path.join(PARENT_DIR, "header.png"))
+        header_resized_img = header_img.resize((1000, 150), Image.Resampling.LANCZOS)
+        tk_img_header = ImageTk.PhotoImage(header_resized_img) 
+        label_header = tk.Label(top_frame_right, image=tk_img_header)
+        label_header.pack(expand= True, anchor='center')
+        label_header.image = tk_img_header 
+        
         
         main_container = ttk.Frame(self)
         main_container.pack(fill="both", expand=True, padx=12, pady=12)
@@ -165,13 +172,13 @@ class AplicacionAutomata(tk.Tk):
                     self.tabla_historial.item(item, values= (self.historial[n][0].replace(':', '_').replace('\"','')))
             else:
                 style.configure("Treeview", rowheight=30, font = ('Kravnika', 30)) 
-                lenguage.config(text="Español")
+                lenguage.config(text="Alf. Latino")
                 self.in_kravnika = True
                 for n,item in enumerate(self.tabla_historial.get_children()):
                                     self.tabla_historial.item(item, values= (self.historial[n][0]))
         
         lenguage = ttk.Button(
-                frame_historial, text="Español", width=15, command=  change_lenguague)
+                frame_historial, text="Alf. Latino", width=15, command=  change_lenguague)
         lenguage.pack(anchor='center',fill='y')
         
         #limpiar history

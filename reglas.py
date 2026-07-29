@@ -13,7 +13,7 @@ class Reglas(ttk.LabelFrame):
         frame_expresiones = ttk.Frame(self, padding=10)
         frame_expresiones.pack(side=tk.TOP, fill="both", expand=True, padx=12, pady=12)
 
-        label_titulo_expresiones = ttk.Label(frame_expresiones, text = "Expresion Logica", font = ("Console", 10, "bold"))
+        label_titulo_expresiones = ttk.Label(frame_expresiones, text = "Expresion Logica", font = ("Console", 14, "bold"))
         label_titulo_expresiones.pack(anchor = "w", pady = (0,4))
         texto_expresiones = (
             "{[(e ↔ f) ∨ (g ↔ h)] ∧ ¬i ∧ [j ∨ (k ↔ l)]}\n"
@@ -76,19 +76,19 @@ class Reglas(ttk.LabelFrame):
         scrollbar.pack(side="right", fill="y")
 
         texto_proposiciones = (
-            "a = Inicia con \" \n"
-            "b = Inicia con -\n"
-            "c = Termina con :\n"
-            "y = Termina con .\n"
-            "z = Es la ultima letra\n"
-            "i = Contiene: Jorge, Jonathan, Fabritzio, Rodrigo\n"
-            "j = Contiene digitos\n"
-            "k = Tiene simbolos especiales\n"
-            "l = Son digitos del 1 al 9 \n"
-            "e = Contiene ?\n"
-            "f = Contiene un ? para cerrar\n"
-            "g = Contiene un ! para cerrar\n"
-            "h = Contiene un !\n"
+            "a = Palabra inicia con \" \n"
+            "b = Palabra inicia con -\n"
+            "c = Palabra separada con :\n"
+            "y = Palabra termina con .\n"
+            "z = Es la ultima letra de la oracion\n"
+            "i = Palabra contiene: Jorge, Jonathan, Fabritzio, Rodrigo\n"
+            "j = Palaabra contiene digitos\n"
+            "k = Palabra tiene simbolos especiales\n"
+            "l = Los digitos son del 1 al 9 \n"
+            "e = Abre ?\n"
+            "f = Usa ? para cerrar\n"
+            "g = Usa ! para cerrar\n"
+            "h = Abre !\n"
             "pn = Palabra enésima es valida\n"
             "q = Palabra / Cadena valida\n"
         )
@@ -144,6 +144,7 @@ class Reglas(ttk.LabelFrame):
     
     Palabras: 
     {words}
+    
 ==============================
 """
     
@@ -152,6 +153,6 @@ class Reglas(ttk.LabelFrame):
         return f"""
 ● {content}
 {prhases}
-salida final: {output}
-                    """
+Salida final: {"Cadena Valida" if output == 1 else "Cadena Invalida"}
+"""
                 
