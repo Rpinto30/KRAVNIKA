@@ -66,7 +66,7 @@ typedef struct Word{
             string new_context = alphaNumeric_mayusc(__context);
             if (new_context.length() < 2) return false;
             char c = new_context[1];
-            if (new_context.substr(2).find('-') != string::npos) return false;
+            if (new_context.substr(2).find('\'') != string::npos) return false;
             return (c == '-') ? true : false;
         }
 
@@ -319,6 +319,21 @@ class Automate{
         bool last_letter = false;
 };
 
+
+bool condition(char s) {
+    return (s >= 'a' && s <= 'z') || (s >= 'A' && s <= 'Z') //alphanumeric
+    || s == '\"'|| s == '\'' || s == '*' || s == ',' || s == '-' || s == '.' || s == ':' || s == ';' || s == '>' || s == '|'//Especial charts
+    || (s >= '0' && s <= '9') //numbers
+    || s == '?' || s == '!'; //Expression
+}
+
+bool verify_lenguage(string Cadena){
+    for (char s : Cadena){
+        if (!condition(s)) return false;
+    }
+    return true;
+}
+
 int main(int argc, char* argv[]){
     
     string Cadena;
@@ -328,14 +343,18 @@ int main(int argc, char* argv[]){
     else cin>>Cadena;
 
     Automate* aut = new Automate(Cadena);
-    Json jsonFile(aut->get_result());
-    for (auto sentence : aut->phrases){
-        jsonFile.set_sentence(sentence.get_sentence_json());
-    }
-    jsonFile.close_json();
-    jsonFile.create_json();
+    
+    if (verify_lenguage(Cadena))
+    {
+        Json jsonFile(aut->get_result());
+        for (auto sentence : aut->phrases){
+            jsonFile.set_sentence(sentence.get_sentence_json());
+        }
+        jsonFile.close_json();
+        jsonFile.create_json();
 
-    //string a;
-    //cin>>a;
-    return aut->get_result();
+        //string a;
+        //cin>>a;
+        return aut->get_result();
+    } else return 0;
 }

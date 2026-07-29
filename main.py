@@ -42,10 +42,8 @@ def ejecutar_automata(cadena: str) -> tuple[bool, str]:
         salida = (stdout_salida or "").strip()
         salida_lower = salida.lower()
 
-        print(salida)
 
         if salida == '1':
-            print('yaaaaaaaaaaaaaaa')
             return True, salida
         elif salida == '0':
             return False, salida
@@ -163,7 +161,7 @@ class AplicacionAutomata(tk.Tk):
                 self.in_kravnika = False
                 
                 for n,item in enumerate(self.tabla_historial.get_children()):
-                    print(self.historial[n][0].replace(':', ' '))
+                    #print(self.historial[n][0].replace(':', ' '))
                     self.tabla_historial.item(item, values= (self.historial[n][0].replace(':', '_').replace('\"','')))
             else:
                 style.configure("Treeview", rowheight=30, font = ('Kravnika', 30)) 
@@ -257,7 +255,6 @@ class AplicacionAutomata(tk.Tk):
                 
             #)
         
-        print(all_text)
         
     def limpiar_historial(self):
         respuesta = messagebox.askyesno(
