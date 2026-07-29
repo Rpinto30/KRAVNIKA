@@ -1,5 +1,5 @@
 <h1> DISEÑO DEL LENGUAJE: KRAVNIKA </h1>
-<h2>ALFABETO<h2>
+<h2>ALFABETO</h2>
 Para todo caracter "c", es valido dentro del lenguaje KRAVNIKA, si y solo si pertenece a:
 
 * Letras = {x | x sea una letra del alfabeto latino con traducción al KRAVNIKA}
