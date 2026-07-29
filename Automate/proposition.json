@@ -3,7 +3,7 @@
 ,
 "sentences": [
 {
-"content": "h\"ola.",
+"content": "C\"reo:q\"ue:e\"sto:e\"s:u'na:c'adena:v'alida.",
 "output": 1,
 "init_exclamation": 0,
 "end_exclamation": 0,
@@ -15,10 +15,70 @@
 ,
 "words": [
 {
-"content": "h\"ola.",
+"content": "C\"reo:",
 "output": 1,
 "init_quotation": 1,
 "init_hyphen": 0,
+"contain_names": 0,
+"have_digits": 0,
+"have_special_charts_digits": 0,
+"next_special_chart_between_19": 0
+},
+{
+"content": "q\"ue:",
+"output": 1,
+"init_quotation": 1,
+"init_hyphen": 0,
+"contain_names": 0,
+"have_digits": 0,
+"have_special_charts_digits": 0,
+"next_special_chart_between_19": 0
+},
+{
+"content": "e\"sto:",
+"output": 1,
+"init_quotation": 1,
+"init_hyphen": 0,
+"contain_names": 0,
+"have_digits": 0,
+"have_special_charts_digits": 0,
+"next_special_chart_between_19": 0
+},
+{
+"content": "e\"s:",
+"output": 1,
+"init_quotation": 1,
+"init_hyphen": 0,
+"contain_names": 0,
+"have_digits": 0,
+"have_special_charts_digits": 0,
+"next_special_chart_between_19": 0
+},
+{
+"content": "u'na:",
+"output": 1,
+"init_quotation": 0,
+"init_hyphen": 1,
+"contain_names": 0,
+"have_digits": 0,
+"have_special_charts_digits": 0,
+"next_special_chart_between_19": 0
+},
+{
+"content": "c'adena:",
+"output": 1,
+"init_quotation": 0,
+"init_hyphen": 1,
+"contain_names": 0,
+"have_digits": 0,
+"have_special_charts_digits": 0,
+"next_special_chart_between_19": 0
+},
+{
+"content": "v'alida.",
+"output": 1,
+"init_quotation": 0,
+"init_hyphen": 1,
 "contain_names": 0,
 "have_digits": 0,
 "have_special_charts_digits": 0,

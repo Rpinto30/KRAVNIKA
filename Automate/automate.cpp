@@ -27,7 +27,7 @@ typedef struct Word{
     string alphaNumeric_mayusc(string s){
         string t = "";
         for (int i = 0; i < s.length(); i++) {
-            if ((s[i] >= 'a' && s[i] <= 'z') || (s[i] >= 'A' && s[i] <= 'Z') || s[i] == '\"'|| s[i] == '-') {
+            if ((s[i] >= 'a' && s[i] <= 'z') || (s[i] >= 'A' && s[i] <= 'Z') || s[i] == '\"'|| s[i] == '\'') {
                 t += tolower(s[i]);
             }
         }
@@ -67,7 +67,7 @@ typedef struct Word{
             if (new_context.length() < 2) return false;
             char c = new_context[1];
             if (new_context.substr(2).find('\'') != string::npos) return false;
-            return (c == '-') ? true : false;
+            return (c == '\'') ? true : false;
         }
 
         bool contain_name(){
